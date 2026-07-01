@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>051 - Modal Popup</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background: #eef0f5;
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .page-hint {
+    position: absolute;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #888;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* ---- Trigger button ---- */
+  .open-btn {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    border: none;
+    padding: 14px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .open-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+  }
+
+  /* ---- Overlay (the dark background behind the modal) ---- */
+  .overlay {
+    position: fixed;
+    inset: 0; /* shorthand for top/right/bottom/left: 0 */
+    background: rgba(20, 20, 30, 0.55);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+
+    /* Hidden by default */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* ---- The modal box itself ---- */
+  .modal {
+    background: #fff;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 12px;
+    padding: 28px 26px;
+    position: relative;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+
+    /* Starts slightly scaled down + shifted; animates up when shown */
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.25s ease;
+  }
+  .overlay.show .modal {
+    transform: translateY(0) scale(1);
+  }
+
+  .modal h2 {
+    margin: 0 0 12px 0;
+    color: #222;
+    font-size: 1.3rem;
+  }
+  .modal p {
+    margin: 0 0 20px 0;
+    color: #555;
+    line-height: 1.55;
+    font-size: 0.95rem;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: #f2f2f5;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 1rem;
+    color: #444;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  .modal-close:hover { background: #e2e2e8; }
+
+  .modal-confirm {
+    background: #6366f1;
+    color: #fff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 7px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .modal-confirm:hover { background: #4f46e5; }
+</style>
+</head>
+<body>
+
+<p class="page-hint">Click the button to open the modal. Close it with the X, the Cancel/Confirm buttons, a click outside, or the Escape key.</p>
+
+<button class="open-btn" id="openModalBtn">Open Modal</button>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="closeModalBtn" aria-label="Close modal">&times;</button>
+    <h2>Confirm your action</h2>
+    <p>This is a simple modal popup built with plain HTML, CSS, and JavaScript. It closes on outside click, the Escape key, or either button below.</p>
+    <button class="modal-confirm" id="confirmBtn">Got it</button>
+  </div>
+</div>
+
+<script>
+  // ---- Grab elements ----
+  const openBtn = document.getElementById("openModalBtn");
+  const closeBtn = document.getElementById("closeModalBtn");
+  const confirmBtn = document.getElementById("confirmBtn");
+  const overlay = document.getElementById("overlay");
+  const modal = document.getElementById("modal");
+
+  function openModal() {
+    overlay.classList.add("show");
+  }
+
+  function closeModal() {
+    overlay.classList.remove("show");
+  }
+
+  // Open the modal when the trigger button is clicked
+  openBtn.addEventListener("click", openModal);
+
+  // Close it via the X button or the confirm button
+  closeBtn.addEventListener("click", closeModal);
+  confirmBtn.addEventListener("click", closeModal);
+
+  // Close it when clicking the dark overlay, but NOT when clicking inside the modal
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+      closeModal();
+    }
+  });
+
+  // Close it when the Escape key is pressed, but only if it's currently open
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && overlay.classList.contains("show")) {
+      closeModal();
+    }
+  });
+</script>
+
+</body>
+</html>
